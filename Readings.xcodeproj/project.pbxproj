@@ -8,6 +8,7 @@
 
 /* Begin PBXFileReference section */
 		B43E65472F3E34AC007B6279 /* Readings.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Readings.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B448C0AF2F3E46F700B99CEA /* First Steps.markdown */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "First Steps.markdown"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -32,6 +33,7 @@
 		B43E653E2F3E34AC007B6279 = {
 			isa = PBXGroup;
 			children = (
+				B448C0AD2F3E469C00B99CEA /* Prompts */,
 				B43E65492F3E34AC007B6279 /* Readings */,
 				B43E65482F3E34AC007B6279 /* Products */,
 			);
@@ -43,6 +45,14 @@
 				B43E65472F3E34AC007B6279 /* Readings.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		B448C0AD2F3E469C00B99CEA /* Prompts */ = {
+			isa = PBXGroup;
+			children = (
+				B448C0AF2F3E46F700B99CEA /* First Steps.markdown */,
+			);
+			path = Prompts;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
