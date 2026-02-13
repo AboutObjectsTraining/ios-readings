@@ -11,8 +11,31 @@ import UIKit
 struct HTMLTextView: UIViewRepresentable {
     let htmlString: String
     
+    // MARK: - UIViewRepresentable
+    
     func makeUIView(context: Context) -> UITextView {
-        let textView = UITextView()
+        configureTextView(UITextView())
+    }
+    
+    func updateUIView(_ textView: UITextView, context: Context) {
+        guard let attributedString = parseHTML(htmlString) else {
+            applyPlainTextFallback(to: textView)
+            return
+        }
+        
+        let styledString = applyDynamicStyling(to: attributedString)
+        textView.attributedText = styledString
+        refreshLayout(for: textView)
+    }
+    
+    func sizeThatFits(_ proposal: ProposedViewSize, uiView: UITextView, context: Context) -> CGSize? {
+        let width = proposal.width ?? UIView.layoutFittingExpandedSize.width
+        return uiView.sizeThatFits(CGSize(width: width, height: .greatestFiniteMagnitude))
+    }
+    
+    // MARK: - Configuration
+    
+    private func configureTextView(_ textView: UITextView) -> UITextView {
         textView.isEditable = false
         textView.isScrollEnabled = false
         textView.backgroundColor = .clear
@@ -23,58 +46,105 @@ struct HTMLTextView: UIViewRepresentable {
         return textView
     }
     
-    func updateUIView(_ textView: UITextView, context: Context) {
-        // Convert HTML string to attributed string
-        if let data = htmlString.data(using: .utf8) {
-            do {
-                let attributedString = try NSAttributedString(
-                    data: data,
-                    options: [
-                        .documentType: NSAttributedString.DocumentType.html,
-                        .characterEncoding: String.Encoding.utf8.rawValue
-                    ],
-                    documentAttributes: nil
-                )
-                
-                // Apply dynamic font sizing
-                let mutableAttributedString = NSMutableAttributedString(attributedString: attributedString)
-                let fullRange = NSRange(location: 0, length: mutableAttributedString.length)
-                
-                // Set font and color
-                mutableAttributedString.addAttribute(
-                    .font,
-                    value: UIFont.preferredFont(forTextStyle: .body),
-                    range: fullRange
-                )
-                mutableAttributedString.addAttribute(
-                    .foregroundColor,
-                    value: UIColor.secondaryLabel,
-                    range: fullRange
-                )
-                
-                textView.attributedText = mutableAttributedString
-                
-                // Force layout update
-                textView.setNeedsLayout()
-                textView.layoutIfNeeded()
-                
-                // Invalidate the intrinsic content size
-                DispatchQueue.main.async {
-                    textView.invalidateIntrinsicContentSize()
-                }
-            } catch {
-                // Fallback to plain text if HTML parsing fails
-                textView.text = htmlString
-                textView.font = .preferredFont(forTextStyle: .body)
-                textView.textColor = .secondaryLabel
-            }
+    // MARK: - HTML Parsing
+    
+    private func parseHTML(_ html: String) -> NSAttributedString? {
+        guard let data = html.data(using: .utf8) else { return nil }
+        
+        return try? NSAttributedString(
+            data: data,
+            options: [
+                .documentType: NSAttributedString.DocumentType.html,
+                .characterEncoding: String.Encoding.utf8.rawValue
+            ],
+            documentAttributes: nil
+        )
+    }
+    
+    // MARK: - Styling
+    
+    private func applyDynamicStyling(to attributedString: NSAttributedString) -> NSAttributedString {
+        let mutableString = NSMutableAttributedString(attributedString: attributedString)
+        let fullRange = NSRange(location: 0, length: mutableString.length)
+        
+        mutableString.enumerateAttributes(in: fullRange, options: []) { attributes, range, _ in
+            applyParagraphStyle(from: attributes, to: mutableString, at: range)
+            applyDynamicFont(from: attributes, to: mutableString, at: range)
+        }
+        
+        applyTextColor(to: mutableString, in: fullRange)
+        
+        return mutableString
+    }
+    
+    private func applyParagraphStyle(from attributes: [NSAttributedString.Key: Any],
+                                     to attributedString: NSMutableAttributedString,
+                                     at range: NSRange) {
+        guard let existingStyle = attributes[.paragraphStyle] as? NSParagraphStyle else { return }
+        let paragraphStyle = existingStyle.mutableCopy() as! NSMutableParagraphStyle
+        attributedString.addAttribute(.paragraphStyle, value: paragraphStyle, range: range)
+    }
+    
+    private func applyDynamicFont(from attributes: [NSAttributedString.Key: Any],
+                                  to attributedString: NSMutableAttributedString,
+                                  at range: NSRange) {
+        let font: UIFont
+        
+        if let existingFont = attributes[.font] as? UIFont {
+            font = createDynamicFont(preservingTraitsFrom: existingFont)
+        } else {
+            font = .preferredFont(forTextStyle: .body)
+        }
+        
+        attributedString.addAttribute(.font, value: font, range: range)
+    }
+    
+    private func createDynamicFont(preservingTraitsFrom existingFont: UIFont) -> UIFont {
+        let traits = existingFont.fontDescriptor.symbolicTraits
+        let baseFont = UIFont.preferredFont(forTextStyle: .body)
+        
+        // Map traits to the appropriate font
+        switch traits {
+        case let t where t.contains([.traitBold, .traitItalic]):
+            return fontWithTraits([.traitBold, .traitItalic], basedOn: baseFont) ?? baseFont
+        case let t where t.contains(.traitBold):
+            return fontWithTraits(.traitBold, basedOn: baseFont) ?? baseFont
+        case let t where t.contains(.traitItalic):
+            return fontWithTraits(.traitItalic, basedOn: baseFont) ?? baseFont
+        default:
+            return baseFont
         }
     }
     
-    func sizeThatFits(_ proposal: ProposedViewSize, uiView: UITextView, context: Context) -> CGSize? {
-        let width = proposal.width ?? UIView.layoutFittingExpandedSize.width
-        let size = uiView.sizeThatFits(CGSize(width: width, height: .greatestFiniteMagnitude))
-        return size
+    private func fontWithTraits(_ traits: UIFontDescriptor.SymbolicTraits,
+                               basedOn baseFont: UIFont) -> UIFont? {
+        guard let descriptor = baseFont.fontDescriptor.withSymbolicTraits(traits) else {
+            return nil
+        }
+        return UIFont(descriptor: descriptor, size: 0)
+    }
+    
+    private func applyTextColor(to attributedString: NSMutableAttributedString, in range: NSRange) {
+        attributedString.addAttribute(.foregroundColor, value: UIColor.secondaryLabel, range: range)
+    }
+    
+    // MARK: - Fallback
+    
+    private func applyPlainTextFallback(to textView: UITextView) {
+        textView.text = htmlString
+        textView.font = .preferredFont(forTextStyle: .body)
+        textView.textColor = .secondaryLabel
+    }
+    
+    // MARK: - Layout
+    
+    private func refreshLayout(for textView: UITextView) {
+        textView.setNeedsLayout()
+        textView.layoutIfNeeded()
+        
+        DispatchQueue.main.async {
+            textView.invalidateIntrinsicContentSize()
+        }
     }
 }
 
