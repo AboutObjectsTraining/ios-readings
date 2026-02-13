@@ -53,6 +53,12 @@ struct BookDetailView: View {
                 .font(.title3)
                 .foregroundStyle(.secondary)
             
+            StarRatingView(
+                rating: book.averageUserRating,
+                ratingCount: book.userRatingCount,
+                size: .medium
+            )
+            
             HStack {
                 Text(book.formattedPrice)
                     .font(.title3)
@@ -239,6 +245,8 @@ struct BookDetailView: View {
             thumbnailURL: URL(string: "https://is1-ssl.mzstatic.com/image/thumb/Publication71/v4/40/62/02/4062025c-8d43-9a7a-2db2-805f48152ec6/Cover-Starters-Guide-1400x1867.png/600x600bb.jpg)"),
             price: 9.99,
             currency: "USD",
-            description: "This is a longer description of the book that would give readers more context about what the book is about, its themes, and why they might want to read it. It can span multiple lines and provide detailed information."
+            description: "This is a longer description of the book that would give readers more context about what the book is about, its themes, and why they might want to read it. It can span multiple lines and provide detailed information.",
+            averageUserRating: 4.5,
+            userRatingCount: 234
         ))
 }

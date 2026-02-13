@@ -27,3 +27,6 @@
 Let's give the image a max height of 320, and present the description in an HTML view so that the embedded HTML tags get interpreted, making sure that the text doesn't get truncated.
 
 Let's move the image between the detail info and the description, and reduce the vertical white space to 12 points above and below the image
+
+
+Let's add ratings stars to the reading list and book detail views.

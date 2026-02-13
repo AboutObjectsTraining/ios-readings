@@ -47,6 +47,12 @@ struct BookRowView: View {
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
                 
+                StarRatingView(
+                    rating: book.averageUserRating,
+                    ratingCount: book.userRatingCount,
+                    size: .small
+                )
+                
                 Text(book.formattedPrice)
                     .font(.subheadline)
                     .foregroundStyle(.green)
@@ -66,7 +72,9 @@ struct BookRowView: View {
         thumbnailURL: nil,
         price: 9.99,
         currency: "USD",
-        description: "A sample book description"
+        description: "A sample book description",
+        averageUserRating: 4.5,
+        userRatingCount: 127
     ))
     .padding()
 }
