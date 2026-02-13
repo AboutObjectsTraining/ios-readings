@@ -6,10 +6,21 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		B448C0D32F3FA32500B99CEA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B43E653F2F3E34AC007B6279 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B43E65462F3E34AC007B6279;
+			remoteInfo = Readings;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		B43E65472F3E34AC007B6279 /* Readings.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Readings.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B448C0AF2F3E46F700B99CEA /* First Steps.markdown */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "First Steps.markdown"; sourceTree = "<group>"; };
 		B448C0C12F3F8E3900B99CEA /* Tool Calling.markdown */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "Tool Calling.markdown"; sourceTree = "<group>"; };
+		B448C0CF2F3FA32500B99CEA /* ReadingsUnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ReadingsUnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -18,10 +29,22 @@
 			path = Readings;
 			sourceTree = "<group>";
 		};
+		B448C0D02F3FA32500B99CEA /* ReadingsUnitTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ReadingsUnitTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		B43E65442F3E34AC007B6279 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B448C0CC2F3FA32500B99CEA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -36,6 +59,7 @@
 			children = (
 				B448C0AD2F3E469C00B99CEA /* Prompts */,
 				B43E65492F3E34AC007B6279 /* Readings */,
+				B448C0D02F3FA32500B99CEA /* ReadingsUnitTests */,
 				B43E65482F3E34AC007B6279 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -44,6 +68,7 @@
 			isa = PBXGroup;
 			children = (
 				B43E65472F3E34AC007B6279 /* Readings.app */,
+				B448C0CF2F3FA32500B99CEA /* ReadingsUnitTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -82,6 +107,29 @@
 			productReference = B43E65472F3E34AC007B6279 /* Readings.app */;
 			productType = "com.apple.product-type.application";
 		};
+		B448C0CE2F3FA32500B99CEA /* ReadingsUnitTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B448C0D52F3FA32500B99CEA /* Build configuration list for PBXNativeTarget "ReadingsUnitTests" */;
+			buildPhases = (
+				B448C0CB2F3FA32500B99CEA /* Sources */,
+				B448C0CC2F3FA32500B99CEA /* Frameworks */,
+				B448C0CD2F3FA32500B99CEA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B448C0D42F3FA32500B99CEA /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				B448C0D02F3FA32500B99CEA /* ReadingsUnitTests */,
+			);
+			name = ReadingsUnitTests;
+			packageProductDependencies = (
+			);
+			productName = ReadingsUnitTests;
+			productReference = B448C0CF2F3FA32500B99CEA /* ReadingsUnitTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -94,6 +142,10 @@
 				TargetAttributes = {
 					B43E65462F3E34AC007B6279 = {
 						CreatedOnToolsVersion = 26.2;
+					};
+					B448C0CE2F3FA32500B99CEA = {
+						CreatedOnToolsVersion = 26.2;
+						TestTargetID = B43E65462F3E34AC007B6279;
 					};
 				};
 			};
@@ -112,12 +164,20 @@
 			projectRoot = "";
 			targets = (
 				B43E65462F3E34AC007B6279 /* Readings */,
+				B448C0CE2F3FA32500B99CEA /* ReadingsUnitTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		B43E65452F3E34AC007B6279 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B448C0CD2F3FA32500B99CEA /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -134,7 +194,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B448C0CB2F3FA32500B99CEA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B448C0D42F3FA32500B99CEA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B43E65462F3E34AC007B6279 /* Readings */;
+			targetProxy = B448C0D32F3FA32500B99CEA /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		B43E65502F3E34AD007B6279 /* Debug */ = {
@@ -322,6 +397,48 @@
 			};
 			name = Release;
 		};
+		B448C0D62F3FA32500B99CEA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7J7LD9SB6Q;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aboutobjects.training.ReadingsUnitTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Readings.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Readings";
+			};
+			name = Debug;
+		};
+		B448C0D72F3FA32500B99CEA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7J7LD9SB6Q;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aboutobjects.training.ReadingsUnitTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Readings.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Readings";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -339,6 +456,15 @@
 			buildConfigurations = (
 				B43E65532F3E34AD007B6279 /* Debug */,
 				B43E65542F3E34AD007B6279 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B448C0D52F3FA32500B99CEA /* Build configuration list for PBXNativeTarget "ReadingsUnitTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B448C0D62F3FA32500B99CEA /* Debug */,
+				B448C0D72F3FA32500B99CEA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

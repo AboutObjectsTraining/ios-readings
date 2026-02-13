@@ -8,7 +8,18 @@
 import SwiftUI
 import UIKit
 
+/// A SwiftUI view that renders HTML content with dynamic typography and styling.
+///
+/// `HTMLTextView` parses HTML strings and displays them using `UITextView` with proper
+/// formatting, including bold and italic text, while applying Dynamic Type for accessibility.
+/// The view automatically adjusts to the proposed size and preserves HTML formatting.
+///
+/// Example usage:
+/// ```swift
+/// HTMLTextView(htmlString: "<p>This is <strong>bold</strong> text.</p>")
+/// ```
 struct HTMLTextView: UIViewRepresentable {
+    /// The HTML content to be rendered.
     let htmlString: String
     
     // MARK: - UIViewRepresentable
@@ -35,6 +46,13 @@ struct HTMLTextView: UIViewRepresentable {
     
     // MARK: - Configuration
     
+    /// Configures a text view for displaying HTML content.
+    ///
+    /// Sets up the text view with appropriate properties for read-only HTML display,
+    /// including disabling editing and scrolling, and configuring layout priorities.
+    ///
+    /// - Parameter textView: The text view to configure.
+    /// - Returns: The configured text view.
     private func configureTextView(_ textView: UITextView) -> UITextView {
         textView.isEditable = false
         textView.isScrollEnabled = false
@@ -48,6 +66,13 @@ struct HTMLTextView: UIViewRepresentable {
     
     // MARK: - HTML Parsing
     
+    /// Parses an HTML string into an attributed string.
+    ///
+    /// Uses the system's HTML document parser to convert HTML markup into
+    /// an `NSAttributedString` with appropriate formatting attributes.
+    ///
+    /// - Parameter html: The HTML string to parse.
+    /// - Returns: An attributed string representation of the HTML, or `nil` if parsing fails.
     private func parseHTML(_ html: String) -> NSAttributedString? {
         guard let data = html.data(using: .utf8) else { return nil }
         
@@ -63,6 +88,14 @@ struct HTMLTextView: UIViewRepresentable {
     
     // MARK: - Styling
     
+    /// Applies Dynamic Type styling to an attributed string while preserving HTML formatting.
+    ///
+    /// Processes the attributed string to replace fonts with Dynamic Type equivalents
+    /// while maintaining bold and italic traits from the original HTML. Also applies
+    /// consistent text coloring.
+    ///
+    /// - Parameter attributedString: The attributed string to style.
+    /// - Returns: A new attributed string with dynamic styling applied.
     private func applyDynamicStyling(to attributedString: NSAttributedString) -> NSAttributedString {
         let mutableString = NSMutableAttributedString(attributedString: attributedString)
         let fullRange = NSRange(location: 0, length: mutableString.length)
@@ -77,6 +110,15 @@ struct HTMLTextView: UIViewRepresentable {
         return mutableString
     }
     
+    /// Preserves paragraph styling from HTML formatting.
+    ///
+    /// Copies existing paragraph style attributes to maintain spacing and alignment
+    /// from the original HTML structure.
+    ///
+    /// - Parameters:
+    ///   - attributes: The existing attributes dictionary.
+    ///   - attributedString: The mutable attributed string to modify.
+    ///   - range: The range to apply the style to.
     private func applyParagraphStyle(from attributes: [NSAttributedString.Key: Any],
                                      to attributedString: NSMutableAttributedString,
                                      at range: NSRange) {
@@ -85,6 +127,15 @@ struct HTMLTextView: UIViewRepresentable {
         attributedString.addAttribute(.paragraphStyle, value: paragraphStyle, range: range)
     }
     
+    /// Applies Dynamic Type fonts while preserving HTML text traits.
+    ///
+    /// Replaces existing fonts with Dynamic Type equivalents, maintaining bold and
+    /// italic traits from the HTML formatting.
+    ///
+    /// - Parameters:
+    ///   - attributes: The existing attributes dictionary.
+    ///   - attributedString: The mutable attributed string to modify.
+    ///   - range: The range to apply the font to.
     private func applyDynamicFont(from attributes: [NSAttributedString.Key: Any],
                                   to attributedString: NSMutableAttributedString,
                                   at range: NSRange) {
@@ -99,6 +150,13 @@ struct HTMLTextView: UIViewRepresentable {
         attributedString.addAttribute(.font, value: font, range: range)
     }
     
+    /// Creates a Dynamic Type font that preserves bold and italic traits.
+    ///
+    /// Examines the symbolic traits of an existing font and creates a new Dynamic Type
+    /// font with the same traits (bold, italic, or both).
+    ///
+    /// - Parameter existingFont: The font whose traits should be preserved.
+    /// - Returns: A Dynamic Type font with matching traits.
     private func createDynamicFont(preservingTraitsFrom existingFont: UIFont) -> UIFont {
         let traits = existingFont.fontDescriptor.symbolicTraits
         let baseFont = UIFont.preferredFont(forTextStyle: .body)
@@ -116,6 +174,12 @@ struct HTMLTextView: UIViewRepresentable {
         }
     }
     
+    /// Creates a font with specified symbolic traits.
+    ///
+    /// - Parameters:
+    ///   - traits: The symbolic traits to apply (e.g., bold, italic).
+    ///   - baseFont: The base font to derive the new font from.
+    /// - Returns: A font with the specified traits, or `nil` if creation fails.
     private func fontWithTraits(_ traits: UIFontDescriptor.SymbolicTraits,
                                basedOn baseFont: UIFont) -> UIFont? {
         guard let descriptor = baseFont.fontDescriptor.withSymbolicTraits(traits) else {
@@ -124,12 +188,23 @@ struct HTMLTextView: UIViewRepresentable {
         return UIFont(descriptor: descriptor, size: 0)
     }
     
+    /// Applies consistent text color to the entire attributed string.
+    ///
+    /// - Parameters:
+    ///   - attributedString: The mutable attributed string to modify.
+    ///   - range: The range to apply the color to.
     private func applyTextColor(to attributedString: NSMutableAttributedString, in range: NSRange) {
         attributedString.addAttribute(.foregroundColor, value: UIColor.secondaryLabel, range: range)
     }
     
     // MARK: - Fallback
     
+    /// Applies plain text fallback styling when HTML parsing fails.
+    ///
+    /// Displays the raw HTML string as plain text with basic styling when the
+    /// HTML parser is unable to process the content.
+    ///
+    /// - Parameter textView: The text view to apply fallback styling to.
     private func applyPlainTextFallback(to textView: UITextView) {
         textView.text = htmlString
         textView.font = .preferredFont(forTextStyle: .body)
@@ -138,6 +213,12 @@ struct HTMLTextView: UIViewRepresentable {
     
     // MARK: - Layout
     
+    /// Forces the text view to refresh its layout and intrinsic content size.
+    ///
+    /// Ensures that the text view properly calculates its size after content changes,
+    /// which is necessary for correct SwiftUI layout behavior.
+    ///
+    /// - Parameter textView: The text view to refresh.
     private func refreshLayout(for textView: UITextView) {
         textView.setNeedsLayout()
         textView.layoutIfNeeded()
