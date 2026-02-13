@@ -21,6 +21,7 @@
 		B448C0AF2F3E46F700B99CEA /* First Steps.markdown */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "First Steps.markdown"; sourceTree = "<group>"; };
 		B448C0C12F3F8E3900B99CEA /* Tool Calling.markdown */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "Tool Calling.markdown"; sourceTree = "<group>"; };
 		B448C0CF2F3FA32500B99CEA /* ReadingsUnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ReadingsUnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B448C0DE2F3FD1D300B99CEA /* Search Detail.markdown */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "Search Detail.markdown"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -78,6 +79,7 @@
 			children = (
 				B448C0AF2F3E46F700B99CEA /* First Steps.markdown */,
 				B448C0C12F3F8E3900B99CEA /* Tool Calling.markdown */,
+				B448C0DE2F3FD1D300B99CEA /* Search Detail.markdown */,
 			);
 			path = Prompts;
 			sourceTree = "<group>";

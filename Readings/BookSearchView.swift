@@ -16,6 +16,7 @@ struct BookSearchView: View {
     @State private var searchResults: [Book] = []
     @State private var isSearching = false
     @State private var searchTask: Task<Void, Never>?
+    @FocusState private var isSearchFieldFocused: Bool
     
     var body: some View {
         NavigationStack {
@@ -35,12 +36,11 @@ struct BookSearchView: View {
                 } else {
                     List {
                         ForEach(searchResults) { book in
-                            Button {
-                                addBook(book)
+                            NavigationLink {
+                                BookDetailView(book: book, showAddButton: true)
                             } label: {
                                 BookRowView(book: book)
                             }
-                            .buttonStyle(.plain)
                         }
                     }
                     .listStyle(.plain)
@@ -48,16 +48,25 @@ struct BookSearchView: View {
             }
             .navigationTitle("Add Book")
             .navigationBarTitleDisplayMode(.inline)
-            .searchable(text: $searchText, prompt: "Search books...")
+            .searchable(
+                text: $searchText,
+                prompt: "Search books..."
+            )
+            .focused($isSearchFieldFocused)
+            .searchPresentationToolbarBehavior(.avoidHidingContent)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
+                    Button("Done") {
                         dismiss()
                     }
                 }
             }
             .onChange(of: searchText) { oldValue, newValue in
                 performSearch()
+            }
+            .onAppear {
+                // Auto-focus the search field when view appears
+                isSearchFieldFocused = true
             }
             .overlay {
                 if isSearching {
@@ -98,11 +107,6 @@ struct BookSearchView: View {
             
             isSearching = false
         }
-    }
-    
-    private func addBook(_ book: Book) {
-        readingList.addBook(book)
-        dismiss()
     }
 }
 

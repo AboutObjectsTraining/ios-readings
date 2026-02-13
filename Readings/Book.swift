@@ -12,13 +12,16 @@ struct Book: Identifiable, Codable, Equatable {
     let title: String
     let author: String
     let thumbnailURL: URL?
-    let price: Double
-    let currency: String
+    let price: Double?
+    let currency: String?
     let description: String?
     let averageUserRating: Double?
     let userRatingCount: Int?
     
     var formattedPrice: String {
+        guard let price = price else {
+            return "Price unavailable"
+        }
         if price == 0 {
             return "Free"
         }

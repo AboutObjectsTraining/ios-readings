@@ -10,11 +10,21 @@ import FoundationModels
 
 struct BookDetailView: View {
     let book: Book
+    let showAddButton: Bool
+    
+    @Environment(\.dismiss) private var dismiss
+    @Environment(ReadingListManager.self) private var readingList
     
     @State private var reviewService = BookReviewService()
     @State private var showReviewAlert = false
     @State private var reviewError: Error?
     @State private var scrollToReview = false
+    @State private var showAddedConfirmation = false
+    
+    init(book: Book, showAddButton: Bool = false) {
+        self.book = book
+        self.showAddButton = showAddButton
+    }
     
     var body: some View {
         ScrollViewReader { proxy in
@@ -29,6 +39,13 @@ struct BookDetailView: View {
             }
             .navigationTitle("Details")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                if showAddButton {
+                    ToolbarItem(placement: .primaryAction) {
+                        addToListButton
+                    }
+                }
+            }
             .alert("Review Ready", isPresented: $showReviewAlert) {
                 reviewAlertButtons
             } message: {
@@ -36,6 +53,11 @@ struct BookDetailView: View {
             }
             .onChange(of: scrollToReview) { oldValue, newValue in
                 handleScrollToReview(newValue, proxy: proxy)
+            }
+            .overlay(alignment: .bottom) {
+                if showAddedConfirmation {
+                    bookAddedToast
+                }
             }
         }
     }
@@ -67,9 +89,11 @@ struct BookDetailView: View {
                 
                 Spacer()
                 
-                Text(book.currency)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                if let currency = book.currency {
+                    Text(currency)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
             }
         }
     }
@@ -171,6 +195,24 @@ struct BookDetailView: View {
     
     // MARK: - Description Section
     
+    private var bookAddedToast: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "checkmark.circle.fill")
+                .foregroundStyle(.green)
+                .font(.title2)
+            
+            Text("Added to Reading List")
+                .font(.subheadline)
+                .fontWeight(.medium)
+        }
+        .padding()
+        .background(.regularMaterial, in: Capsule())
+        .shadow(radius: 8)
+        .padding()
+        .transition(.move(edge: .bottom).combined(with: .opacity))
+        .animation(.spring(response: 0.5, dampingFraction: 0.7), value: showAddedConfirmation)
+    }
+    
     @ViewBuilder
     private var descriptionSection: some View {
         if let description = book.description, !description.isEmpty {
@@ -185,6 +227,24 @@ struct BookDetailView: View {
     }
     
     // MARK: - Alert Components
+    
+    @ViewBuilder
+    private var addToListButton: some View {
+        if isBookInList {
+            Button {
+                // Book is already in list
+            } label: {
+                Label("Added", systemImage: "checkmark")
+            }
+            .disabled(true)
+        } else {
+            Button {
+                addBookToList()
+            } label: {
+                Label("Add", systemImage: "plus")
+            }
+        }
+    }
     
     @ViewBuilder
     private var reviewAlertButtons: some View {
@@ -207,6 +267,22 @@ struct BookDetailView: View {
     }
     
     // MARK: - Helper Methods
+    
+    private var isBookInList: Bool {
+        readingList.books.contains(where: { $0.id == book.id })
+    }
+    
+    private func addBookToList() {
+        readingList.addBook(book)
+        showAddedConfirmation = true
+        
+        // Auto-dismiss after a short delay and haptic feedback
+        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            dismiss()
+        }
+    }
     
     private func generateReview() async {
         do {
@@ -248,5 +324,6 @@ struct BookDetailView: View {
             description: "This is a longer description of the book that would give readers more context about what the book is about, its themes, and why they might want to read it. It can span multiple lines and provide detailed information.",
             averageUserRating: 4.5,
             userRatingCount: 234
-        ))
+        ), showAddButton: true)
+        .environment(ReadingListManager())
 }

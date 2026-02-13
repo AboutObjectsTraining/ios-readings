@@ -14,9 +14,15 @@ class iTunesService {
             return []
         }
         
+        // Trim whitespace and ensure proper encoding
+        let trimmedQuery = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedQuery.isEmpty else {
+            return []
+        }
+        
         var components = URLComponents(string: "https://itunes.apple.com/search")
         components?.queryItems = [
-            URLQueryItem(name: "term", value: query),
+            URLQueryItem(name: "term", value: trimmedQuery),
             URLQueryItem(name: "media", value: "ebook"),
             URLQueryItem(name: "entity", value: "ebook"),
             URLQueryItem(name: "limit", value: "25")
@@ -28,8 +34,6 @@ class iTunesService {
         
         let (data, _) = try await URLSession.shared.data(from: url)
         let response = try JSONDecoder().decode(iTunesSearchResponse.self, from: data)
-        
-        print(response)
         
         return response.results
     }

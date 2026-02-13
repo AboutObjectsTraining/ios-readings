@@ -7,59 +7,17 @@
 
 import SwiftUI
 
+/// The root view of the Readings app.
+///
+/// `ContentView` serves as the top-level entry point for the application,
+/// managing the shared `ReadingListManager` and injecting it into the
+/// environment for all child views.
 struct ContentView: View {
     @State private var readingList = ReadingListManager()
-    @State private var showingAddBook = false
-    @State private var editMode: EditMode = .inactive
     
     var body: some View {
-        NavigationStack {
-            Group {
-                if readingList.books.isEmpty {
-                    ContentUnavailableView(
-                        "Your Reading List is Empty",
-                        systemImage: "books.vertical",
-                        description: Text("Tap the + button to discover and add books to your reading list")
-                    )
-                } else {
-                    List {
-                        ForEach(readingList.books) { book in
-                            NavigationLink(destination: BookDetailView(book: book)) {
-                                BookRowView(book: book)
-                            }
-                        }
-                        .onDelete(perform: readingList.removeBooks)
-                        .onMove(perform: readingList.moveBooks)
-                    }
-                    .listStyle(.plain)
-                }
-            }
-            .navigationTitle("Reading List")
-            .environment(\.editMode, $editMode)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    if !readingList.books.isEmpty {
-                        Button(editMode == .active ? "Done" : "Edit") {
-                            withAnimation {
-                                editMode = editMode == .active ? .inactive : .active
-                            }
-                        }
-                    }
-                }
-                
-                ToolbarItem(placement: .primaryAction) {
-                    Button {
-                        showingAddBook = true
-                    } label: {
-                        Label("Add Book", systemImage: "plus")
-                    }
-                }
-            }
-            .sheet(isPresented: $showingAddBook) {
-                BookSearchView()
-                    .environment(readingList)
-            }
-        }
+        ReadingListView()
+            .environment(readingList)
     }
 }
 
