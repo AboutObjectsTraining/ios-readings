@@ -9,6 +9,7 @@
 /* Begin PBXFileReference section */
 		B43E65472F3E34AC007B6279 /* Readings.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Readings.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B448C0AF2F3E46F700B99CEA /* First Steps.markdown */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "First Steps.markdown"; sourceTree = "<group>"; };
+		B448C0C12F3F8E3900B99CEA /* Tool Calling.markdown */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "Tool Calling.markdown"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -51,6 +52,7 @@
 			isa = PBXGroup;
 			children = (
 				B448C0AF2F3E46F700B99CEA /* First Steps.markdown */,
+				B448C0C12F3F8E3900B99CEA /* Tool Calling.markdown */,
 			);
 			path = Prompts;
 			sourceTree = "<group>";

@@ -6,12 +6,19 @@
 //
 
 import SwiftUI
+import FoundationModels
 
 struct BookDetailView: View {
     let book: Book
     
+    @State private var reviewService = BookReviewService()
+    @State private var showReviewAlert = false
+    @State private var reviewError: Error?
+    @State private var scrollToReview = false
+    
     var body: some View {
-        ScrollView {
+        ScrollViewReader { proxy in
+            ScrollView {
             VStack(alignment: .leading, spacing: 12) {
                 // Book information at the top
                 VStack(alignment: .leading, spacing: 6) {
@@ -66,6 +73,64 @@ struct BookDetailView: View {
                 }
                 .padding(.vertical, 12) // 12 points above and below
                 
+                // AI Review Button/Section below the image
+                if case .available = reviewService.modelAvailability {
+                    VStack(alignment: .leading, spacing: 12) {
+                        if let review = reviewService.generatedReview {
+                            HStack {
+                                Text("AI Review")
+                                    .font(.headline)
+                                
+                                Spacer()
+                                
+                                Button {
+                                    reviewService.clearReview()
+                                } label: {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .foregroundStyle(.secondary)
+                                }
+                                .buttonStyle(.borderless)
+                            }
+                            
+                            Text(review)
+                                .font(.body)
+                                .foregroundStyle(.secondary)
+                                .padding()
+                                .background(Color(.systemGray6))
+                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                                .id("aiReview") // ID for scrolling
+                        } else {
+                            Button {
+                                Task {
+                                    do {
+                                        try await reviewService.generateReview(for: book)
+                                        showReviewAlert = true
+                                    } catch {
+                                        reviewError = error
+                                        showReviewAlert = true
+                                    }
+                                }
+                            } label: {
+                                if reviewService.isGenerating {
+                                    HStack {
+                                        ProgressView()
+                                            .controlSize(.small)
+                                        Text("Generating Review...")
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                } else {
+                                    Label("Generate AI Review", systemImage: "sparkles")
+                                        .frame(maxWidth: .infinity)
+                                }
+                            }
+                            .buttonStyle(.bordered)
+                            .tint(.blue)
+                            .disabled(reviewService.isGenerating)
+                        }
+                    }
+                    .padding(.horizontal, 6)
+                }
+                
                 // Description
                 if let description = book.description, !description.isEmpty {
                     VStack(alignment: .leading, spacing: 6) {
@@ -81,6 +146,30 @@ struct BookDetailView: View {
         }
         .navigationTitle("Details")
         .navigationBarTitleDisplayMode(.inline)
+        .alert("Review Ready", isPresented: $showReviewAlert) {
+            Button("View Review") {
+                scrollToReview = true
+                reviewError = nil
+            }
+            Button("Dismiss", role: .cancel) {
+                reviewError = nil
+            }
+        } message: {
+            if let error = reviewError {
+                Text(error.localizedDescription)
+            } else {
+                Text("Your AI-generated book review is ready to read!")
+            }
+        }
+        .onChange(of: scrollToReview) { oldValue, newValue in
+            if newValue {
+                withAnimation {
+                    proxy.scrollTo("aiReview", anchor: .top)
+                }
+                scrollToReview = false
+            }
+        }
+    }
     }
     
     // Convert the 100x100 thumbnail URL to a larger image
