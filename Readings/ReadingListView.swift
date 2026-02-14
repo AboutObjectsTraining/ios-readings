@@ -18,6 +18,7 @@ struct ReadingListView: View {
     @Environment(ReadingListManager.self) private var readingList
     
     @State private var showingAddBook = false
+    @State private var showingRecommendations = false
     @State private var editMode: EditMode = .inactive
     
     var body: some View {
@@ -38,12 +39,19 @@ struct ReadingListView: View {
                     }
                 }
                 
+                ToolbarItem(placement: .topBarTrailing) {
+                    discoverButton
+                }
+                
                 ToolbarItem(placement: .primaryAction) {
                     addButton
                 }
             }
             .sheet(isPresented: $showingAddBook) {
                 BookSearchView()
+            }
+            .sheet(isPresented: $showingRecommendations) {
+                RecommendationsView()
             }
         }
     }
@@ -79,6 +87,15 @@ struct ReadingListView: View {
                 editMode = editMode == .active ? .inactive : .active
             }
         }
+    }
+    
+    private var discoverButton: some View {
+        Button {
+            showingRecommendations = true
+        } label: {
+            Label("Discover", systemImage: "sparkles")
+        }
+        .disabled(readingList.books.count < 2)
     }
     
     private var addButton: some View {
